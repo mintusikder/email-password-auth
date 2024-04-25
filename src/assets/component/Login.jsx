@@ -4,11 +4,11 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import auth from "../firebase.config";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-
+import { FaEye ,FaEyeSlash  } from 'react-icons/fa';
 const Login = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-
+  const [showPassword, setShowPassword] = useState("")
   const handleSubmit = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
@@ -52,17 +52,22 @@ const Login = () => {
                   required
                 />
               </div>
-              <div className="form-control">
+              <div className="form-control relative">
                 <label className="label">
                   <span className="label-text">Password</span>
                 </label>
                 <input
-                  type="password"
+                      type={showPassword? "text" : "password"}
                   placeholder="password"
                   name="password"
                   className="input input-bordered"
                   required
                 />
+                    <span className="absolute  top-12 right-2" onClick={() => setShowPassword(!showPassword)}>
+                  {
+                    showPassword ? <FaEye></FaEye> : <FaEyeSlash></FaEyeSlash>
+                  }
+                </span>
                 <label className="label">
                   <a href="#" className="label-text-alt link link-hover">
                     Forgot password?

@@ -4,10 +4,12 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 import { Link } from "react-router-dom";
 import auth from "../firebase.config";
 import { useState } from "react";
+import { FaEye ,FaEyeSlash  } from 'react-icons/fa';
 
 const Register = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState("")
 
   const handelSubmit = (e) => {
     e.preventDefault();
@@ -78,17 +80,24 @@ const Register = () => {
                   required
                 />
               </div>
-              <div className="form-control">
+              <div className="form-control relative">
                 <label className="label">
                   <span className="label-text">Password</span>
                 </label>
-                <input
-                  type="password"
+            
+               <input 
+                  type={showPassword? "text" : "password"}
                   name="password"
                   placeholder="password"
                   className="input input-bordered"
                   required
                 />{" "}
+                <span className="absolute  top-12 right-2" onClick={() => setShowPassword(!showPassword)}>
+                  {
+                    showPassword ? <FaEye></FaEye> : <FaEyeSlash></FaEyeSlash>
+                  }
+                </span>
+            
                 <br />
                 <div>
                   <input type="checkbox" name="terms" id="terms" />
