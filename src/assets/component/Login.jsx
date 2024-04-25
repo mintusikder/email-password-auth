@@ -1,19 +1,26 @@
 // import React from 'react';
 
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import auth from "../firebase.config";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { FaEye ,FaEyeSlash  } from 'react-icons/fa';
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 const Login = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [showPassword, setShowPassword] = useState("")
+  const [showPassword, setShowPassword] = useState("");
+  const emailRef = useRef(null);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
     console.log(email, password);
+    setSuccess("");
+    setError("");
     signInWithEmailAndPassword(auth, email, password)
       .then((result) => {
         const loggedUser = result.user;
@@ -26,6 +33,26 @@ const Login = () => {
       });
   };
 
+  const handelForgetPassword = () => {
+    const email = emailRef.current.value;
+    if (!email) {
+      console.log("Please Provide an email", emailRef.current.value);
+      return
+    }
+    else if(!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)){
+      console.log("Please correct email address")
+      return
+    }
+    // send validation email
+    sendPasswordResetEmail(auth , email)
+    .then(()=>{
+      alert("Please check your email")
+    })
+    .catch(error =>{
+      console.log(error)
+    })
+  };
+  
   return (
     <div>
       <div className="hero min-h-screen bg-base-200">
@@ -48,6 +75,7 @@ const Login = () => {
                   type="email"
                   placeholder="email"
                   name="email"
+                  ref={emailRef}
                   className="input input-bordered"
                   required
                 />
@@ -57,25 +85,31 @@ const Login = () => {
                   <span className="label-text">Password</span>
                 </label>
                 <input
-                      type={showPassword? "text" : "password"}
+                  type={showPassword ? "text" : "password"}
                   placeholder="password"
                   name="password"
                   className="input input-bordered"
                   required
                 />
-                    <span className="absolute  top-12 right-2" onClick={() => setShowPassword(!showPassword)}>
-                  {
-                    showPassword ? <FaEye></FaEye> : <FaEyeSlash></FaEyeSlash>
-                  }
+                <span
+                  className="absolute  top-12 right-2"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <FaEye></FaEye> : <FaEyeSlash></FaEyeSlash>}
                 </span>
                 <label className="label">
-                  <a href="#" className="label-text-alt link link-hover">
+                  <a
+                    onClick={handelForgetPassword}
+                    href="#"
+                    className="label-text-alt link link-hover"
+                  >
                     Forgot password?
                   </a>
                 </label>
                 <label className="label">
                   <a href="#" className="label-text-alt link link-hover">
-                    Please Create an account <Link to="/register">Register</Link>{" "}
+                    Please Create an account{" "}
+                    <Link to="/register">Register</Link>{" "}
                   </a>
                 </label>
               </div>
