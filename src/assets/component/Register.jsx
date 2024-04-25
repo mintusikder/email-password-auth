@@ -1,10 +1,11 @@
 // import React from 'react';
 
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { Link } from "react-router-dom";
 import auth from "../firebase.config";
 import { useState } from "react";
 import { FaEye ,FaEyeSlash  } from 'react-icons/fa';
+
 
 const Register = () => {
   const [error, setError] = useState("");
@@ -36,6 +37,11 @@ const Register = () => {
         const loggedUser = result.user;
         console.log(loggedUser);
         setSuccess("Register Successful");
+        // send verification email
+        sendEmailVerification(result.user)
+        .then(() =>{
+          alert("Please check your email and verify")
+        })
       })
       .catch((error) => {
         console.log(error);
