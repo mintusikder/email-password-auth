@@ -1,6 +1,6 @@
 // import React from 'react';
 
-import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth";
 import { Link } from "react-router-dom";
 import auth from "../firebase.config";
 import { useState } from "react";
@@ -14,10 +14,11 @@ const Register = () => {
 
   const handelSubmit = (e) => {
     e.preventDefault();
+    const name = e.target.name.value;
     const email = e.target.email.value;
     const password = e.target.password.value;
     const accepted = e.target.terms.checked
-    console.log(accepted,email, password);
+    console.log(accepted,email, password,name);
 
     if (password.length < 6) {
       setError("Password should be at least 6 characters");
@@ -37,6 +38,18 @@ const Register = () => {
         const loggedUser = result.user;
         console.log(loggedUser);
         setSuccess("Register Successful");
+        // update profile 
+        updateProfile(result.user,{
+          displayName : name,
+          photoURL: "https://example.com/jane-q-user/profile.jpg"
+        })
+        .then(() =>{
+            console.log("Updated Profile")
+        })
+        .catch(error =>{
+          console.log(error)
+        })
+
         // send verification email
         sendEmailVerification(result.user)
         .then(() =>{
